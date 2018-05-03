@@ -14,10 +14,6 @@ data Color = B | N deriving (Show,Eq)
 type Pieza = (Tipo, Color)
 type Posicion = (Char, Integer)
 
---Nos dice si el movimiento de una pieza dada es valido
-movValido :: Pieza -> Posicion -> Posicion -> Bool
-movValido pieza p1 p2 = elem p2 $ posiblesMovimientos pieza p1
-
 --Nos devuelve todas los posibles movimientos de una pieza dada su posicion en el tablero
 posiblesMovimientos :: Pieza -> Posicion -> [Posicion]
 posiblesMovimientos pieza (c,i) = let

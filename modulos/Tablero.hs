@@ -33,7 +33,7 @@ muevePieza t p1@(c1,i1) p2@(c2,i2)
     pieza' = getPieza t p2 --ls posible pieza que este en la posicion final
     in case pieza of
       Nothing -> (Nothing,t, Just NoHayPieza) --no hacemos nada y decimos la causa
-      otherwise -> if not $ movValido (fromJust pieza) p1 p2 -- si el moviemiento es valido
+      otherwise -> if not $ movValido t (fromJust pieza) p1 p2 -- si el moviemiento es valido
         then (Nothing,t, Just MovInvalido) --no hacemos nada y decimos la causa
         else let
           t' = adjust (\_ -> (adjust (\_ -> Nothing) i1 (t!c1))) c1 t --quitamos la pieza de donde estaba
@@ -44,6 +44,14 @@ muevePieza t p1@(c1,i1) p2@(c2,i2)
               then (Nothing, t , Just AutoAtaque)
               else r
 
+
+--Nos dice si el movimiento de una pieza dada es valido
+movValido :: Tablero -> Pieza -> Posicion -> Posicion -> Bool
+movValido tab pieza p1 p2 = elem p2 $ dropInalcanzables tab pieza $ posiblesMovimientos pieza p1
+
+--Dado posbibles movimeintos de una pieza quita aquellas que son inalcanzables dado un tablero.
+dropInalcanzables :: Tablero -> Pieza -> [Posicion] -> [Posicion]
+dropInalcanzables = error ""
 
 --Posiblemente nos devuelva una pieza
 getPieza :: Tablero -> Posicion -> Maybe Pieza
