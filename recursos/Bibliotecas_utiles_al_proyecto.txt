@@ -1,0 +1,10 @@
+System.IO --Entrada y salida en consola
+System.Info --Informacion del sistema y del compilador
+System.Process --Uso de comandos de consola
+System.Environment --Permite el uso del ambiente del OS
+System.Directory --Permite la manipulacion de directorios y archivos
+Data.List --Funciones utiles para listas
+Data.Maybe --Funciones utiles para Maybe
+Data.Char --Funcines utiles para Chars
+Control.Monad --Permite el uso de procesos de control
+Data.Map.Strict --Implementacion de diccionarios
