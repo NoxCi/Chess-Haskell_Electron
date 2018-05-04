@@ -22,24 +22,30 @@ posiblesMovimientos pieza (c,i) = let
   d = j - i
   in case pieza of
     (Torre,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], a == j || b == i]
-    (Caballo,_) -> filter posicionValida [(toChar (j+2), i+1), (toChar (j+2), i-1),
-                                         (toChar (j-2), i+1), (toChar (j-2), i-1),
-                                         (toChar (j+1), i+2), (toChar (j-1), i+2),
-                                         (toChar (j+1), i-2), (toChar (j-1), i-2)]
+    (Caballo,_) -> filter posicionValida [(toChar (j+2), i+1), (toChar (j+2), i-1), --arriba
+                                         (toChar (j-2), i+1), (toChar (j-2), i-1), --abajo
+                                         (toChar (j+1), i+2), (toChar (j-1), i+2), -- derecha
+                                         (toChar (j+1), i-2), (toChar (j-1), i-2)] --izquierda
     (Alfil,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], a == b+d || a+b == s]
     (Rey,_) -> filter posicionValida [(toChar (j+1), i), (toChar (j+1), i+1),
                                      (toChar (j), i+1), (toChar (j-1), i+1),
                                      (toChar (j-1), i), (toChar (j-1), i-1),
                                      (toChar (j), i-1), (toChar (j+1), i-1)]
     (Reina,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], a == b+d || a+b == s || a == j || b == i]
-    (Peon,_) -> if j == 2
-                then [(toChar (j+1), i), (toChar (j+1), i+1), (toChar (j+1), i-1), (toChar (j+2), i)]
-                else [(toChar (j+1), i), (toChar (j+1), i+1), (toChar (j+1), i-1)]
+    (Peon,B) -> if j == 2
+                then filter posicionValida [(toChar (j+1), i), (toChar (j+1), i+1), (toChar (j+1), i-1), (toChar (j+2), i)]
+                else filter posicionValida[(toChar (j+1), i), (toChar (j+1), i+1), (toChar (j+1), i-1)]
+    (Peon,N) -> if j == 2
+                then filter posicionValida [(toChar (j-1), i), (toChar (j-1), i+1), (toChar (j-1), i-1), (toChar (j-2), i)]
+                else filter posicionValida[(toChar (j-1), i), (toChar (j-1), i+1), (toChar (j-1), i-1)]
 
 
 --Nos dice dado una posicion es valida
 posicionValida :: Posicion -> Bool
 posicionValida (c,j) = ((toChar . toInt) c /= ' ') && ((toInt . toChar) j /= -1)
+
+makePosicion :: (Integer, Integer) -> Posicion
+makePosicion (a, b) = (toChar a, b)
 
 --Devuelve el color de una pieza
 color :: Pieza -> Color

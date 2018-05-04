@@ -2,6 +2,7 @@ module Modulos.Tablero where
 
 import Data.Maybe
 import Data.Map.Strict
+import Data.List
 import Modulos.Pieza
 import Modulos.Excepcion
 
@@ -51,8 +52,41 @@ movValido tab pieza p1 p2 = elem p2 $ dropInalcanzables tab pieza $ posiblesMovi
 
 --Dado posbibles movimeintos de una pieza quita aquellas que son inalcanzables dado un tablero.
 dropInalcanzables :: Tablero -> Pieza -> [Posicion] -> [Posicion]
-dropInalcanzables = error ""
+dropInalcanzables tab pieza l@(x:xs) = case  pieza of
+  (Torre, _) -> let piezas = (Prelude.filter (hayPieza tab) l)
+                    l1 = [p | p <- l, not$ inLeft p piezas]
+                    l2 = [p | p <- l1, not$ inRight p piezas]
+                    l3 = [p | p <- l2, not$ up p piezas]
+                    l4 = [p | p <- l3, not$ dawn p piezas]
+                in l4
+  (Caballo, _) ->  [p | p <- l , not$ hayPieza tab p]
+  (Alfil, _) -> error ""
+  (Rey, _) -> [p | p <- l , not$ hayPieza tab p]
+  (Reina, _) -> let piezas = (Prelude.filter (hayPieza tab) l)
+                    l1 = [p | p <- l, not$ inLeft p piezas]
+                    l2 = [p | p <- l1, not$ inRight p piezas]
+                    l3 = [p | p <- l2, not$ up p piezas]
+                    l4 = [p | p <- l3, not$ dawn p piezas]
+                in error "Faltan las diagonales"
+  (Peon, _) -> error ""
+  where
+    inLeft p@(c1, p1) xs = case xs of
+      [] -> False
+      ((c2,p2):xs) -> (c1 == c2 && p1 < p2) || inLeft p xs
+    inRight p@(c1, p1) xs = case xs of
+      [] -> False
+      ((c2,p2):xs) -> (c1 == c2 && p2 > p1) || inRight p xs
+    up p@(c1, p1) xs = case xs of
+      [] -> False
+      ((c2,p2):xs) -> (toInt c1 > toInt c2 && p2 == p1) || up p xs
+    dawn p@(c1, p1) xs = case xs of
+      [] -> False
+      ((c2,p2):xs) -> (toInt c1 < toInt c2 && p2 == p1) || dawn p xs
 
 --Posiblemente nos devuelva una pieza
 getPieza :: Tablero -> Posicion -> Maybe Pieza
 getPieza t (c,i) = (t ! c) ! i
+
+--Nos dice si hay una pieza en la posicon dada
+hayPieza :: Tablero -> Posicion -> Bool
+hayPieza tab p =  Nothing /= getPieza tab p
