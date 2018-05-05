@@ -53,11 +53,7 @@ movValido tab pieza p1 p2 = elem p2 $ dropInalcanzables tab pieza $ posiblesMovi
 --Dado posbibles movimeintos de una pieza quita aquellas que son inalcanzables dado un tablero.
 dropInalcanzables :: Tablero -> Pieza -> [Posicion] -> [Posicion]
 dropInalcanzables tab pieza l@(x:xs) = case  pieza of
-  (Torre, _) -> let l1 = [p | p <- l, not$ left p piezas]
-                    l2 = [p | p <- l1, not$ right p piezas]
-                    l3 = [p | p <- l2, not$ up p piezas]
-                    l4 = [p | p <- l3, not$ dawn p piezas]
-                in l1
+  (Torre, _) -> error ""
   (Caballo, _) ->  [p | p <- l , not$ hayPieza tab p]
   (Alfil, _) -> error ""
   (Rey, _) -> [p | p <- l , not$ hayPieza tab p]
