@@ -6,7 +6,7 @@ instance Show Tipo where
   show Caballo = "C"
   show Alfil = "A"
   show Rey = "R"
-  show Reina = "R'"
+  show Reina = "Q"
   show Peon = "P"
 
 data Color = B | N deriving (Show,Eq)

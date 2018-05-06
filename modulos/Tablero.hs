@@ -21,7 +21,15 @@ creaTableroInicial = fromList [('A',fromList [(1,Just (Torre, N)),(2,Just (Cabal
 
 --Crea una representacion en String del tablero
 dibujaTablero :: Tablero -> String
-dibujaTablero t = error ""
+dibujaTablero t = draw $ toList t
+  where
+    draw [] = "      1   2   3   4   5   6   7   8"
+    draw ((c, mapa): rs) = (show c ++ " |" ++ draw'(toList mapa)) ++ draw rs
+
+    draw' [] = "\n"
+    draw' ((i, pieza): rs) = case pieza of
+      Nothing -> "   |" ++ draw' rs
+      Just (p,color) -> show p ++ "," ++ show color ++ "|" ++ draw' rs
 
 --Mueve una pieza desde una posicion dada a otra
 --si no puede no hace nada
