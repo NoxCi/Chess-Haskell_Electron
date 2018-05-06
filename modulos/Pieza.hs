@@ -16,25 +16,31 @@ type Posicion = (Char, Integer)
 
 --Nos devuelve todas los posibles movimientos de una pieza dada su posicion en el tablero
 posiblesMovimientos :: Pieza -> Posicion -> [Posicion]
-posiblesMovimientos pieza (c,i) = let
+posiblesMovimientos pieza p@(c,i) = let
   j = toInt c
   s = i + j
   d = j - i
   in case pieza of
-    (Torre,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], a == j || b == i]
+    (Torre,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], (a /= j && b == i) || (a == j && b /= i)]
+    
     (Caballo,_) -> filter posicionValida [(toChar (j+2), i+1), (toChar (j+2), i-1), --arriba
                                          (toChar (j-2), i+1), (toChar (j-2), i-1), --abajo
                                          (toChar (j+1), i+2), (toChar (j-1), i+2), -- derecha
                                          (toChar (j+1), i-2), (toChar (j-1), i-2)] --izquierda
-    (Alfil,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], a == b+d || a+b == s]
+
+    (Alfil,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], (a /= b+d && a+b == s) || (a == b+d && a+b /= s)]
+
     (Rey,_) -> filter posicionValida [(toChar (j+1), i), (toChar (j+1), i+1),
                                      (toChar (j), i+1), (toChar (j-1), i+1),
                                      (toChar (j-1), i), (toChar (j-1), i-1),
                                      (toChar (j), i-1), (toChar (j+1), i-1)]
-    (Reina,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], a == b+d || a+b == s || a == j || b == i]
+
+    (Reina,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], (a /= j && b == i) || (a == j && b /= i) || (a /= b+d && a+b == s) || (a == b+d && a+b /= s)]
+
     (Peon,B) -> if j == 2
                 then filter posicionValida [(toChar (j+1), i), (toChar (j+1), i+1), (toChar (j+1), i-1), (toChar (j+2), i)]
                 else filter posicionValida[(toChar (j+1), i), (toChar (j+1), i+1), (toChar (j+1), i-1)]
+
     (Peon,N) -> if j == 2
                 then filter posicionValida [(toChar (j-1), i), (toChar (j-1), i+1), (toChar (j-1), i-1), (toChar (j-2), i)]
                 else filter posicionValida[(toChar (j-1), i), (toChar (j-1), i+1), (toChar (j-1), i-1)]

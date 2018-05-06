@@ -45,42 +45,81 @@ muevePieza t p1@(c1,i1) p2@(c2,i2)
         then (Nothing,t, Just MovInvalido) --no hacemos nada y decimos la causa
         else let
           t' = adjust (\_ -> (adjust (\_ -> Nothing) i1 (t!c1))) c1 t --quitamos la pieza de donde estaba
-          r = (pieza',adjust (\_ -> (adjust (\_ -> pieza) i2 (t!c2))) c2 t', Nothing) --la movemos a la posicion dada
-          in case pieza' of --vemos si hay alguna pieza en la posicion destino
-            Nothing -> r --si no hay
-            otherwise -> if color (fromJust pieza) == color (fromJust pieza') --si hay, vemos que no sea del mismo color
-              then (Nothing, t , Just AutoAtaque)
-              else r
+          r = adjust (\_ -> (adjust (\_ -> pieza) i2 (t!c2))) c2 t' --la movemos a la posicion dada
+          in (pieza', r , Nothing)
 
 
 --Nos dice si el movimiento de una pieza dada es valido
 movValido :: Tablero -> Pieza -> Posicion -> Posicion -> Bool
-movValido tab pieza p1 p2 = elem p2 $ dropInalcanzables tab pieza $ posiblesMovimientos pieza p1
+movValido tab pieza pI pF = elem pF $ dropInalcanzables tab pieza pI $ posiblesMovimientos pieza pI
 
 --Dado posbibles movimeintos de una pieza quita aquellas que son inalcanzables dado un tablero.
-dropInalcanzables :: Tablero -> Pieza -> [Posicion] -> [Posicion]
-dropInalcanzables tab pieza l@(x:xs) = case  pieza of
-  (Torre, _) -> error ""
-  (Caballo, _) ->  [p | p <- l , not$ hayPieza tab p]
-  (Alfil, _) -> error ""
-  (Rey, _) -> [p | p <- l , not$ hayPieza tab p]
-  (Reina, _) -> error ""
-  (Peon, N) -> error ""
-  (Peon, B) -> error ""
+dropInalcanzables :: Tablero -> Pieza -> Posicion -> [Posicion] -> [Posicion]
+dropInalcanzables tab pieza pI ls = case  pieza of
+  (Torre, c) -> let
+    l1 = [p | p <- ls, not $ left p lefts]
+    l2 = [p | p <- l1, not $ right p rights]
+    l3 = [p | p <- l2, not $ up p ups]
+    l4 = [p | p <- l3, not $ dawn p dawns]
+    in Prelude.filter (distintoColor tab c) l4
+  (Caballo, c) -> Prelude.filter (distintoColor tab c) ls
+  (Alfil, c) -> let
+    l1 = [p | p <- ls, not $ upLeft p upLefts]
+    l2 = [p | p <- l1, not $ upRight p upRights]
+    l3 = [p | p <- l2, not $ dawnLeft p dawnLefts]
+    l4 = [p | p <- l3, not $ dawnRight p dawnRights]
+    in Prelude.filter (distintoColor tab c) l4
+  (Rey, c) -> Prelude.filter (distintoColor tab c) ls
+  (Reina, c) -> let
+    l1 = [p | p <- ls, not $ left p lefts]
+    l2 = [p | p <- l1, not $ right p rights]
+    l3 = [p | p <- l2, not $ up p ups]
+    l4 = [p | p <- l3, not $ dawn p dawns]
+    l5 = [p | p <- l4, not $ upLeft p upLefts]
+    l6 = [p | p <- l5, not $ upRight p upRights]
+    l7 = [p | p <- l6, not $ dawnLeft p dawnLefts]
+    l8 = [p | p <- l7, not $ dawnRight p dawnRights]
+    in Prelude.filter (distintoColor tab c) l8
+  (Peon, N) -> Prelude.filter (distintoColor tab N) [p | p <- ls, not $ dawn p dawns]
+  (Peon, B) -> Prelude.filter (distintoColor tab B) [p | p <- ls, not $ up p ups]
 
   where
-    piezas = (Prelude.filter (hayPieza tab) l)
-    --Las sigueintes funciones nos dicen si una posicion esta
-    --a la izquierda, derecha, arriba, etc, de alguna posicion de
-    --una lista de posiciones.
-    left p@(c1, p1) ls = error ""
-    right p@(c1, p1) ls = error ""
-    up p@(c1, p1) ls = error ""
-    dawn p@(c1, p1) ls = error ""
-    dUpLeft p@(c1, p1) ls = error ""
-    dUpRight p@(c1, p1) ls = error ""
-    dDawnLeft p@(c1, p1) ls = error ""
-    dDawnRight p@(c1, p1) ls = error ""
+    piezas = Prelude.filter (hayPieza tab) ls
+
+    distintoColor tab c x = case getPieza tab x of
+      Nothing -> True
+      Just (_,c') -> c /= c'
+
+    lefts = [p | p <- piezas, left p [pI]]
+    rights = [p | p <- piezas, right p [pI]]
+    ups = [p | p <- piezas, up p [pI]]
+    dawns = [p | p <- piezas, dawn p [pI]]
+
+    upLefts = [p | p <- piezas, upLeft p [pI]]
+    upRights = [p | p <- piezas, upRight p [pI]]
+    dawnLefts = [p | p <- piezas, dawnLeft p [pI]]
+    dawnRights = [p | p <- piezas, dawnRight p [pI]]
+
+    --Todas la siguientes funciones nos dicen dada una posicon y una lista de
+    -- posiciones si la primera esta a la iquierda, derecha, arrbia, etc
+    -- de alguna de las posiciones de la lista.
+    left _ [] = False
+    left p@(c1, i1) ((c2,i2):rs) = (c1 == c2 && i1 < i2)  || left p rs
+    right _ [] = False
+    right p@(c1, i1) ((c2,i2):rs) = (c1 == c2 && i2 > i1) || right p rs
+    up _ [] = False
+    up p@(c1, i1) ((c2,i2):rs) = (toInt c1 > toInt c2 && i2 == i1) || up p rs
+    dawn _ [] = False
+    dawn p@(c1, i1) ((c2,i2):rs) = (toInt c1 < toInt c2 && i2 == i1) || dawn p rs
+
+    upLeft _ [] = False
+    upLeft p@(c1, i1) ((c2,i2):rs) = (toInt c2 < toInt c1 && i1 < i2) || upLeft p rs
+    upRight _ [] = False
+    upRight p@(c1, i1) ((c2,i2):rs) = (toInt c2 < toInt c1 && i2 > i1) || upRight p rs
+    dawnLeft _ [] = False
+    dawnLeft p@(c1, i1) ((c2,i2):rs) = (toInt c1 < toInt c2 && i2 < i1) || dawnLeft p rs
+    dawnRight _ [] = False
+    dawnRight p@(c1, i1) ((c2,i2):rs) = (toInt c1 < toInt c2 && i2 > i1) || dawnRight p rs
 
 --Posiblemente nos devuelva una pieza
 getPieza :: Tablero -> Posicion -> Maybe Pieza
