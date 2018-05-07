@@ -6,7 +6,6 @@ import Data.List
 import Modulos.Pieza
 import Modulos.Excepcion
 
-data Letra = A | C | D | E | F | G | H
 type Tablero = Map Char (Map Integer (Maybe Pieza))
 
 --Nos da el trablero inicial
