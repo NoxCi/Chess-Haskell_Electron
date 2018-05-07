@@ -46,8 +46,9 @@ dibujaTablero t ls =  "     _____ _____ _____ _____ _____ _____ _____ _____\n"
 --si no puede no hace nada
 muevePieza :: Tablero -> Posicion -> Posicion -> Color -> (Maybe Pieza,Tablero, Maybe Excepcion)
 muevePieza t p1@(c1,i1) p2@(c2,i2) c
-  | not $ posicionValida p2 = (Nothing , t, Just CoordenadaInexistente)
-  | not $ hayPieza t p1 = (Nothing,t, Just NoHayPieza)
+  | not $ posicionValida p1 = (Nothing , t, Just PosicionInicialInexistente)
+  | not $ posicionValida p2 = (Nothing , t, Just PosicionFinalInexistente)
+  | not $ hayPieza t p1 = (Nothing,t, Just NoHayPiezaInicial)
   | c /= color (fromJust (getPieza t p1)) = (Nothing,t, Just PiezaContraria)
   | otherwise = let
     pieza  = getPieza t p1 --la pieza a mover
