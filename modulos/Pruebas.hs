@@ -9,5 +9,5 @@ piezas_posiblesMovimientos = posiblesMovimientos (Reina, B) ('D', 5)
 piezas_posicionValida = error ""
 
 --Prubas para Modulos.Tablero
-tablero_dibujaTablero = putStrLn $ dibujaTablero creaTableroInicial
-tablero_dropInalcanzables = dropInalcanzables creaTableroInicial (Reina, B) ('D', 5) $ posiblesMovimientos (Reina, B) ('D', 5)
+tablero_dibujaTablero = putStrLn $ dibujaTablero creaTableroInicial $ tablero_dropInalcanzables
+tablero_dropInalcanzables = dropInalcanzables creaTableroInicial (Caballo, B) ('D', 5) $ posiblesMovimientos (Caballo, B) ('D', 5)

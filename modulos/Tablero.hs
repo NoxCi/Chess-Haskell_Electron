@@ -20,16 +20,27 @@ creaTableroInicial = fromList [('A',fromList [(1,Just (Torre, N)),(2,Just (Cabal
                                ('H',fromList [(1,Just (Torre, B)),(2,Just (Caballo, B)),(3,Just (Alfil, B)),(4,Just (Rey, B)),(5,Just (Reina, B)),(6,Just (Alfil, B)),(7,Just (Caballo, B)),(8,Just (Torre, B))])]
 
 --Crea una representacion en String del tablero
-dibujaTablero :: Tablero -> String
-dibujaTablero t = draw $ toList t
+dibujaTablero :: Tablero -> [Posicion] -> String
+dibujaTablero t ls =  "     _____ _____ _____ _____ _____ _____ _____ _____\n"
+                   ++ draw (toList t) 0 ls
   where
-    draw [] = "      1   2   3   4   5   6   7   8"
-    draw ((c, mapa): rs) = (show c ++ " |" ++ draw'(toList mapa)) ++ draw rs
+    draw [] _ _= "       1     2     3     4     5     6     7     8"
+    draw ((c, mapa): rs) i ls = let
+       ls' = [n | (c', n) <- ls, c' == c]
+      in if even i
+        then "    |     |-----|     |-----|     |-----|     |-----|\n"
+          ++ show c ++ " |" ++ draw' (toList mapa) ls' ++ draw rs (i+1) ls
+        else "    |-----|     |-----|     |-----|     |-----|     |\n"
+           ++ show c ++ " |" ++ draw' (toList mapa) ls' ++ draw rs (i+1) ls
 
-    draw' [] = "\n"
-    draw' ((i, pieza): rs) = case pieza of
-      Nothing -> "   |" ++ draw' rs
-      Just (p,color) -> show p ++ "," ++ show color ++ "|" ++ draw' rs
+    draw' [] _ = "\n    |_____|_____|_____|_____|_____|_____|_____|_____|\n"
+    draw' ((i, pieza): rs) ls = if elem i ls
+      then case pieza of
+        Nothing -> "|   ||" ++ draw' rs ls
+        Just (t,color) -> "|" ++ show t ++ "," ++ show color ++ "||" ++ draw' rs ls
+      else case pieza of
+        Nothing -> "     |" ++ draw' rs ls
+        Just (t,color) -> " " ++ show t ++ "," ++ show color ++ " |" ++ draw' rs ls
 
 --Mueve una pieza desde una posicion dada a otra
 --si no puede no hace nada
