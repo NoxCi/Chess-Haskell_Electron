@@ -22,7 +22,7 @@ posiblesMovimientos pieza p@(c,i) = let
   d = j - i
   in case pieza of
     (Torre,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], (a /= j && b == i) || (a == j && b /= i)]
-    
+
     (Caballo,_) -> filter posicionValida [(toChar (j+2), i+1), (toChar (j+2), i-1), --arriba
                                          (toChar (j-2), i+1), (toChar (j-2), i-1), --abajo
                                          (toChar (j+1), i+2), (toChar (j-1), i+2), -- derecha
@@ -41,7 +41,7 @@ posiblesMovimientos pieza p@(c,i) = let
                 then filter posicionValida [(toChar (j+1), i), (toChar (j+1), i+1), (toChar (j+1), i-1), (toChar (j+2), i)]
                 else filter posicionValida[(toChar (j+1), i), (toChar (j+1), i+1), (toChar (j+1), i-1)]
 
-    (Peon,N) -> if j == 2
+    (Peon,N) -> if j == 7
                 then filter posicionValida [(toChar (j-1), i), (toChar (j-1), i+1), (toChar (j-1), i-1), (toChar (j-2), i)]
                 else filter posicionValida[(toChar (j-1), i), (toChar (j-1), i+1), (toChar (j-1), i-1)]
 
