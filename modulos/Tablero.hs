@@ -48,7 +48,7 @@ muevePieza :: Tablero -> Posicion -> Posicion -> Tablero
 muevePieza t p@(c1,i1) (c2,i2) = let
       pieza  = getPieza t p
       t' = adjust (\_ -> (adjust (\_ -> Nothing) i1 (t!c1))) c1 t --quitamos la pieza de donde estaba
-      r = adjust (\_ -> (adjust (\_ -> pieza) i2 (t!c2))) c2 t' --la movemos a la posicion dada
+      r = adjust (\_ -> (adjust (\_ -> pieza) i2 (t'!c2))) c2 t' --la movemos a la posicion dada
       in r
 
 --Dado posbibles movimeintos de una pieza quita aquellas que son inalcanzables dado un tablero.
