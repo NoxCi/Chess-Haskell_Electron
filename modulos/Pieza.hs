@@ -52,6 +52,8 @@ posiblesMovimientos pieza p@(c,i) = let
 posicionValida :: Posicion -> Bool
 posicionValida (c,j) = ((toChar . toInt) c /= ' ') && ((toInt . toChar) j /= -1)
 
+--Intenta crear una posicion a partir de una String, valida o no,
+--devuelve Nothing si no pudo.
 makePosicion :: String -> Maybe Posicion
 makePosicion st
   | length st < 2 = Nothing

@@ -1,0 +1,2 @@
+Error #copiaDePieza
+ Una posible solucion al error, podria ser crear un tablero nuevo, a apartir del anterior.

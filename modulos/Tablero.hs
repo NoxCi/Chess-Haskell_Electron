@@ -44,21 +44,12 @@ dibujaTablero t ls =  "     _____ _____ _____ _____ _____ _____ _____ _____\n"
 
 --Mueve una pieza desde una posicion dada a otra
 --si no puede no hace nada
-muevePieza :: Tablero -> Posicion -> Posicion -> (Maybe Pieza, Maybe Tablero)
-muevePieza t p1@(c1,i1) p2@(c2,i2) = let
-    pieza  = getPieza t p1 --la pieza a mover
-    pieza' = getPieza t p2 --ls posible pieza que este en la posicion final
-    in if not $ movValido t (fromJust pieza) p1 p2 -- si el moviemiento es valido
-        then (Nothing,Nothing) --no hacemos nada y decimos la causa
-        else let
-          t' = adjust (\_ -> (adjust (\_ -> Nothing) i1 (t!c1))) c1 t --quitamos la pieza de donde estaba
-          r = adjust (\_ -> (adjust (\_ -> pieza) i2 (t!c2))) c2 t' --la movemos a la posicion dada
-          in (pieza', Just r)
-
-
---Nos dice si el movimiento de una pieza dada es valido
-movValido :: Tablero -> Pieza -> Posicion -> Posicion -> Bool
-movValido tab pieza pI pF = elem pF $ dropInalcanzables tab pieza pI $ posiblesMovimientos pieza pI
+muevePieza :: Tablero -> Posicion -> Posicion -> Tablero
+muevePieza t p@(c1,i1) (c2,i2) = let
+      pieza  = getPieza t p
+      t' = adjust (\_ -> (adjust (\_ -> Nothing) i1 (t!c1))) c1 t --quitamos la pieza de donde estaba
+      r = adjust (\_ -> (adjust (\_ -> pieza) i2 (t!c2))) c2 t' --la movemos a la posicion dada
+      in r
 
 --Dado posbibles movimeintos de una pieza quita aquellas que son inalcanzables dado un tablero.
 dropInalcanzables :: Tablero -> Pieza -> Posicion -> [Posicion] -> [Posicion]

@@ -58,9 +58,9 @@ loop t@tablero ls mPI i msg = do
             then loop tablero ls mPI i "Posición invalida"
             else do
               let pI = fromJust mPI
-              case muevePieza t pI pF  of
-                (_, Nothing) -> loop tablero ls mPI i "Posición invalida"
-                (_, Just t') -> loop t' [] Nothing (i+1) ""
+              if not (elem pF ls)
+                then loop tablero ls mPI i "Posición invalida"
+                else loop (muevePieza t pI pF) [] Nothing (i+1) ""
 
     --Jugador 2
     else if null ls --seleccion de posicion inicial
@@ -94,6 +94,6 @@ loop t@tablero ls mPI i msg = do
             then loop tablero ls mPI i "Posición invalida"
             else do
               let pI = fromJust mPI
-              case muevePieza t pI pF  of
-                (_, Nothing) -> loop tablero ls mPI i "Posición invalida"
-                (_, Just t') -> loop t' [] Nothing (i+1) ""
+              if not (elem pF ls)
+                then loop tablero ls mPI i "Posición invalida"
+                else loop (muevePieza t pI pF) [] Nothing (i+1) ""
