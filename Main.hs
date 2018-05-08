@@ -4,11 +4,15 @@ import Modulos.Tablero
 import Modulos.Pieza
 import Modulos.Pruebas
 import System.Process
+import System.Info
 import Data.Maybe
 
 main = do
   let tablero = creaTableroInicial
-  callCommand "cls"
+      cmd = if os == "mingw32"
+        then "cls"
+        else "clear"
+  callCommand cmd
   putStr$ "Jugador 1: Blancas | Jugador 2: Negras\n\n" ++
             "T: Torre    N: Negras\n" ++
             "C: Caballo  B: Blancas\n" ++
@@ -21,15 +25,15 @@ main = do
             "Ej. A2\n" ++
             "Enter para continuar: "
   _ <- getLine
-  loop tablero [] Nothing 0 ""
+  loop tablero cmd [] Nothing 0 ""
 
 
-loop t@tablero ls mPI i msg = do
+loop t@tablero cmd ls mPI i msg = do
   if even i --Jugador 1
 
     then if null ls --seleccion de posicion inicial
       then do
-        callCommand "cls"
+        callCommand cmd
         putStr $ dibujaTablero t [] ++ "\n" ++
                "     Turno Jugador 1               " ++ msg ++ "\n" ++
                "Posición inicial: "
@@ -37,16 +41,16 @@ loop t@tablero ls mPI i msg = do
         let mPI' = makePosicion p
             pI = fromJust mPI'
         if mPI' == Nothing || not (posicionValida pI)
-          then loop tablero [] Nothing i "Posición invalida"
+          then loop tablero cmd [] Nothing i "Posición invalida"
           else do
             let mPieza = getPieza t pI
                 pieza = fromJust mPieza
             if mPieza == Nothing || color pieza == N
-              then loop tablero [] Nothing i "Posición invalida"
-              else loop tablero (dropInalcanzables t pieza pI (posiblesMovimientos pieza pI)) mPI' i ""
+              then loop tablero cmd [] Nothing i "Posición invalida"
+              else loop tablero cmd (dropInalcanzables t pieza pI (posiblesMovimientos pieza pI)) mPI' i ""
 
       else do  --seleccion de posicion final
-        callCommand "cls"
+        callCommand cmd
         putStr $ dibujaTablero t ls ++ "\n" ++
                "     Turno Jugador 1               " ++ msg ++ "\n" ++
                "Posición final: "
@@ -55,17 +59,17 @@ loop t@tablero ls mPI i msg = do
           mPF = makePosicion p
           pF = fromJust mPF
           in if mPF == Nothing
-            then loop tablero ls mPI i "Posición invalida"
+            then loop tablero cmd ls mPI i "Posición invalida"
             else do
               let pI = fromJust mPI
               if not (elem pF ls)
-                then loop tablero ls mPI i "Posición invalida"
-                else loop (muevePieza t pI pF) [] Nothing (i+1) ""
+                then loop tablero cmd ls mPI i "Posición invalida"
+                else loop (muevePieza t pI pF) cmd [] Nothing (i+1) ""
 
     --Jugador 2
     else if null ls --seleccion de posicion inicial
       then do
-        callCommand "cls"
+        callCommand cmd
         putStr $ dibujaTablero t [] ++ "\n" ++
                "     Turno Jugador 2               " ++ msg ++ "\n" ++
                "Posición inicial: "
@@ -73,16 +77,16 @@ loop t@tablero ls mPI i msg = do
         let mPI' = makePosicion p
             pI = fromJust mPI'
         if mPI' == Nothing || not (posicionValida pI)
-          then loop tablero [] Nothing i "Posición invalida"
+          then loop tablero cmd [] Nothing i "Posición invalida"
           else do
             let mPieza = getPieza t pI
                 pieza = fromJust mPieza
             if mPieza == Nothing || color pieza == B
-              then loop tablero [] Nothing i "Posición invalida"
-              else loop tablero (dropInalcanzables t pieza pI (posiblesMovimientos pieza pI)) mPI' i ""
+              then loop tablero cmd [] Nothing i "Posición invalida"
+              else loop tablero cmd (dropInalcanzables t pieza pI (posiblesMovimientos pieza pI)) mPI' i ""
 
       else do  --seleccion de posicion final
-        callCommand "cls"
+        callCommand cmd
         putStr $ dibujaTablero t ls ++ "\n" ++
                "     Turno Jugador 2               " ++ msg ++ "\n" ++
                "Posición final: "
@@ -91,9 +95,9 @@ loop t@tablero ls mPI i msg = do
           mPF = makePosicion p
           pF = fromJust mPF
           in if mPF == Nothing
-            then loop tablero ls mPI i "Posición invalida"
+            then loop tablero cmd ls mPI i "Posición invalida"
             else do
               let pI = fromJust mPI
               if not (elem pF ls)
-                then loop tablero ls mPI i "Posición invalida"
-                else loop (muevePieza t pI pF) [] Nothing (i+1) ""
+                then loop tablero cmd ls mPI i "Posición invalida"
+                else loop (muevePieza t pI pF) cmd [] Nothing (i+1) ""
