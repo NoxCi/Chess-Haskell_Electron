@@ -44,21 +44,16 @@ dibujaTablero t ls =  "     _____ _____ _____ _____ _____ _____ _____ _____\n"
 
 --Mueve una pieza desde una posicion dada a otra
 --si no puede no hace nada
-muevePieza :: Tablero -> Posicion -> Posicion -> Color -> (Maybe Pieza,Tablero, Maybe Excepcion)
-muevePieza t p1@(c1,i1) p2@(c2,i2) c
-  | not $ posicionValida p1 = (Nothing , t, Just PosicionInicialInexistente)
-  | not $ posicionValida p2 = (Nothing , t, Just PosicionFinalInexistente)
-  | not $ hayPieza t p1 = (Nothing,t, Just NoHayPiezaInicial)
-  | c /= color (fromJust (getPieza t p1)) = (Nothing,t, Just PiezaContraria)
-  | otherwise = let
+muevePieza :: Tablero -> Posicion -> Posicion -> (Maybe Pieza, Maybe Tablero)
+muevePieza t p1@(c1,i1) p2@(c2,i2) = let
     pieza  = getPieza t p1 --la pieza a mover
     pieza' = getPieza t p2 --ls posible pieza que este en la posicion final
     in if not $ movValido t (fromJust pieza) p1 p2 -- si el moviemiento es valido
-        then (Nothing,t, Just MovInvalido) --no hacemos nada y decimos la causa
+        then (Nothing,Nothing) --no hacemos nada y decimos la causa
         else let
           t' = adjust (\_ -> (adjust (\_ -> Nothing) i1 (t!c1))) c1 t --quitamos la pieza de donde estaba
           r = adjust (\_ -> (adjust (\_ -> pieza) i2 (t!c2))) c2 t' --la movemos a la posicion dada
-          in (pieza', r , Nothing)
+          in (pieza', Just r)
 
 
 --Nos dice si el movimiento de una pieza dada es valido

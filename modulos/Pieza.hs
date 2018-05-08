@@ -1,5 +1,7 @@
 module Modulos.Pieza where
 
+import Data.Char
+
 data Tipo = Torre | Caballo | Alfil | Rey | Reina | Peon deriving Eq
 instance Show Tipo where
   show Torre = "T"
@@ -50,8 +52,15 @@ posiblesMovimientos pieza p@(c,i) = let
 posicionValida :: Posicion -> Bool
 posicionValida (c,j) = ((toChar . toInt) c /= ' ') && ((toInt . toChar) j /= -1)
 
-makePosicion :: (Integer, Integer) -> Posicion
-makePosicion (a, b) = (toChar a, b)
+makePosicion :: String -> Maybe Posicion
+makePosicion st
+  | length st < 2 = Nothing
+  | otherwise = let
+    letra = st !! 0
+    num = st !! 1
+    in if isDigit num
+      then Just (toUpper letra, read [num])
+      else Nothing
 
 --Devuelve el color de una pieza
 color :: Pieza -> Color
