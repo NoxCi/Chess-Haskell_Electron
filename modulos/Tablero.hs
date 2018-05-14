@@ -1,9 +1,21 @@
 module Modulos.Tablero where
 
-import Data.Maybe
-import Data.Map.Strict
-import Data.List
-import Modulos.Pieza
+import Data.Maybe (fromJust)
+import Data.Map.Strict(Map,
+                       (!),
+                       fromList,
+                       adjust,
+                       toList)
+import Modulos.Pieza(Color(..),
+                     Tipo(..),
+                     Pieza,
+                     Posicion,
+                     toInt,
+                     toChar,
+                     makePosicion,
+                     color,
+                     posiblesMovimientos,
+                     posicionValida)
 
 type Tablero = Map Char (Map Integer (Maybe Pieza))
 
@@ -58,15 +70,15 @@ dropInalcanzables tab pieza pI ls = case  pieza of
     l2 = [p | p <- l1, not $ right p rights]
     l3 = [p | p <- l2, not $ up p ups]
     l4 = [p | p <- l3, not $ dawn p dawns]
-    in Prelude.filter (distintoColor tab c) l4
-  (Caballo, c) -> Prelude.filter (distintoColor tab c) ls
+    in filter (distintoColor tab c) l4
+  (Caballo, c) -> filter (distintoColor tab c) ls
   (Alfil, c) -> let
     l1 = [p | p <- ls, not $ upLeft p upLefts]
     l2 = [p | p <- l1, not $ upRight p upRights]
     l3 = [p | p <- l2, not $ dawnLeft p dawnLefts]
     l4 = [p | p <- l3, not $ dawnRight p dawnRights]
-    in Prelude.filter (distintoColor tab c) l4
-  (Rey, c) -> Prelude.filter (distintoColor tab c) ls
+    in filter (distintoColor tab c) l4
+  (Rey, c) -> filter (distintoColor tab c) ls
   (Reina, c) -> let
     l1 = [p | p <- ls, not $ left p lefts]
     l2 = [p | p <- l1, not $ right p rights]
@@ -76,19 +88,19 @@ dropInalcanzables tab pieza pI ls = case  pieza of
     l6 = [p | p <- l5, not $ upRight p upRights]
     l7 = [p | p <- l6, not $ dawnLeft p dawnLefts]
     l8 = [p | p <- l7, not $ dawnRight p dawnRights]
-    in Prelude.filter (distintoColor tab c) l8
+    in filter (distintoColor tab c) l8
   (Peon, N) -> let
     l1 = [p | p <- ls, not (dawnLeft p [pI]) || (dawnLeft p [pI] && hayPieza tab p)]
     l2 = [p | p <- l1, not (dawnRight p [pI]) || (dawnRight p [pI] && hayPieza tab p)]
-    in Prelude.filter (distintoColor tab N) [p | p <- l2, not (dawn p [pI]) || (dawn p [pI] && not (hayPieza tab p))]
+    in filter (distintoColor tab N) [p | p <- l2, not (dawn p [pI]) || (dawn p [pI] && not (hayPieza tab p))]
 
   (Peon, B) -> let
     l1 = [p | p <- ls, not (upLeft p [pI]) || (upLeft p [pI] && hayPieza tab p)]
     l2 = [p | p <- l1, not (upRight p [pI]) || (upRight p [pI] && hayPieza tab p)]
-    in Prelude.filter (distintoColor tab B) [p | p <- l2, not (up p [pI]) || (up p [pI] && not (hayPieza tab p))]
+    in filter (distintoColor tab B) [p | p <- l2, not (up p [pI]) || (up p [pI] && not (hayPieza tab p))]
 
   where
-    piezas = Prelude.filter (hayPieza tab) ls
+    piezas = filter (hayPieza tab) ls
 
     distintoColor tab c x = case getPieza tab x of
       Nothing -> True

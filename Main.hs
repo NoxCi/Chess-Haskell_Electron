@@ -1,11 +1,19 @@
 module Main where
 
-import Modulos.Tablero
-import Modulos.Pieza
+import Modulos.Tablero(creaTableroInicial,
+                       dibujaTablero,
+                       muevePieza,
+                       dropInalcanzables,
+                       getPieza)
+import Modulos.Pieza(Color(..),
+                     makePosicion,
+                     color,
+                     posiblesMovimientos,
+                     posicionValida)
 import Modulos.Pruebas
-import System.Process
-import System.Info
-import Data.Maybe
+import System.Process (callCommand)
+import System.Info (os)
+import Data.Maybe (fromJust)
 
 main = do
   let tablero = creaTableroInicial

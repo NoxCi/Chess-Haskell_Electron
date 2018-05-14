@@ -1,6 +1,6 @@
 module Modulos.Pieza where
 
-import Data.Char
+import Data.Char (isDigit, toUpper)
 
 data Tipo = Torre | Caballo | Alfil | Rey | Reina | Peon deriving Eq
 instance Show Tipo where
