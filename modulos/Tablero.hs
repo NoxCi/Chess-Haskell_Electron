@@ -4,7 +4,6 @@ import Data.Maybe
 import Data.Map.Strict
 import Data.List
 import Modulos.Pieza
-import Modulos.Excepcion
 
 type Tablero = Map Char (Map Integer (Maybe Pieza))
 
