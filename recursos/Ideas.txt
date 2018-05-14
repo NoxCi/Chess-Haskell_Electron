@@ -1,1 +1,3 @@
-Implementar la deteccion del Haque y del Haque Mate.
+Implementar la deteccion del Jaque y del Jaque Mate.
+Agregar regla para el rey, la cual no le permita comer a una pieza que le haga Jaque
+Ir mostrando las piezas comidas.

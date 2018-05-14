@@ -37,10 +37,10 @@ dibujaTablero t ls =  "     _____ _____ _____ _____ _____ _____ _____ _____\n"
     draw' ((i, pieza): rs) ls = if elem i ls
       then case pieza of
         Nothing -> "|   ||" ++ draw' rs ls
-        Just (t,color) -> "|" ++ show t ++ "," ++ show color ++ "||" ++ draw' rs ls
+        Just (t,color) -> "|" ++ show color ++ "," ++ show t ++ "||" ++ draw' rs ls
       else case pieza of
         Nothing -> "     |" ++ draw' rs ls
-        Just (t,color) -> " " ++ show t ++ "," ++ show color ++ " |" ++ draw' rs ls
+        Just (t,color) -> " " ++ show color ++ "," ++ show t ++ " |" ++ draw' rs ls
 
 --Mueve una pieza desde una posicion dada a otra
 --si no puede no hace nada
