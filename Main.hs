@@ -13,7 +13,7 @@ main = do
         then "cls"
         else "clear"
   callCommand cmd
-  putStr$ "Jugador 1: Blancas | Jugador 2: Negras\n\n" ++
+  putStrLn$ "Jugador 1: Blancas | Jugador 2: Negras\n\n" ++
             "T: Torre    N: Negras\n" ++
             "C: Caballo  B: Blancas\n" ++
             "A: Alfil\n" ++
@@ -21,6 +21,7 @@ main = do
             "Q: Reina\n" ++
             "P: Peon\n\n" ++
             "Para introducir una posicion solo basta con introducir la letra seguido del número\n" ++
+            "Para salir introducir precionar Ctlr+C\n" ++
             "Ej. a2\n" ++
             "Ej. A2\n" ++
             "Enter para continuar: "
@@ -34,7 +35,7 @@ loop t@tablero cmd ls mPI i msg = do
     then if null ls --seleccion de posicion inicial
       then do
         callCommand cmd
-        putStr $ dibujaTablero t [] ++ "\n" ++
+        putStrLn $ dibujaTablero t [] ++ "\n" ++
                "     Turno Jugador 1               " ++ msg ++ "\n" ++
                "Posición inicial: "
         p <- getLine
@@ -51,7 +52,7 @@ loop t@tablero cmd ls mPI i msg = do
 
       else do  --seleccion de posicion final
         callCommand cmd
-        putStr $ dibujaTablero t ls ++ "\n" ++
+        putStrLn $ dibujaTablero t ls ++ "\n" ++
                "     Turno Jugador 1               " ++ msg ++ "\n" ++
                "Posición final: "
         p <- getLine
@@ -70,7 +71,7 @@ loop t@tablero cmd ls mPI i msg = do
     else if null ls --seleccion de posicion inicial
       then do
         callCommand cmd
-        putStr $ dibujaTablero t [] ++ "\n" ++
+        putStrLn $ dibujaTablero t [] ++ "\n" ++
                "     Turno Jugador 2               " ++ msg ++ "\n" ++
                "Posición inicial: "
         p <- getLine
@@ -87,7 +88,7 @@ loop t@tablero cmd ls mPI i msg = do
 
       else do  --seleccion de posicion final
         callCommand cmd
-        putStr $ dibujaTablero t ls ++ "\n" ++
+        putStrLn $ dibujaTablero t ls ++ "\n" ++
                "     Turno Jugador 2               " ++ msg ++ "\n" ++
                "Posición final: "
         p <- getLine
