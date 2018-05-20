@@ -1,0 +1,11 @@
+{
+  "name": "hello-world",
+  "version": "0.1.0",
+  "main": "GUI/GUIcontroller.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^2.0.0"
+  }
+}

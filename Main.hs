@@ -15,8 +15,38 @@ import Modulos.Pruebas
 import System.Process (callCommand)
 import System.Info (os)
 import Data.Maybe (fromJust)
+import Control.Concurrent (threadDelay,
+                           forkOS)
 
+fileP_O = "shared_files/Ohs_Ijs.txt"
+fileP_I = "shared_files/Ihs_Ojs.txt"
+
+main :: IO ()
 main = do
+  output fileP_O $ "1\n" ++ codificaTablero creaTableroInicial []
+  idT_1 <- forkOS $ callCommand "npm start"
+  --app
+  return ()
+
+app :: IO ()
+app = do
+  inP <- input fileP_I
+  let outP =  inP --aqui debe procesarse la entrada
+  output fileP_O outP
+  app
+
+input :: FilePath -> IO String
+input filePath = do
+  threadDelay 100000
+  readFile filePath
+
+output :: FilePath -> String -> IO ()
+output filePath text = do
+  writeFile filePath text
+
+--Condigo de prototipo--
+main' :: IO ()
+main' = do
   let tablero = creaTableroInicial
       cmd = if os == "mingw32"
         then "cls"
