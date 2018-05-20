@@ -40,9 +40,9 @@ dibujaTablero t ls =  "     _____ _____ _____ _____ _____ _____ _____ _____\n"
        ls' = [n | (c', n) <- ls, c' == c]
       in if even i
         then "    |     |-----|     |-----|     |-----|     |-----|\n"
-          ++ show c ++ " |" ++ draw' (toList mapa) ls' ++ draw rs (i+1) ls
+          ++ [c] ++ " |" ++ draw' (toList mapa) ls' ++ draw rs (i+1) ls
         else "    |-----|     |-----|     |-----|     |-----|     |\n"
-           ++ show c ++ " |" ++ draw' (toList mapa) ls' ++ draw rs (i+1) ls
+           ++ [c] ++ " |" ++ draw' (toList mapa) ls' ++ draw rs (i+1) ls
 
     draw' [] _ = "\n    |_____|_____|_____|_____|_____|_____|_____|_____|\n"
     draw' ((i, pieza): rs) ls = if elem i ls
@@ -56,7 +56,21 @@ dibujaTablero t ls =  "     _____ _____ _____ _____ _____ _____ _____ _____\n"
 --Funcion que codifica el tablero en un String para que pueda ser leido e
 --interpretado por el GUI
 codificaTablero :: Tablero -> [Posicion] -> String
-codificaTablero = error ""
+codificaTablero t ls = code (toList t) ls
+  where
+    code [] _= ""
+    code ((c, mapa): rs) ls = let
+       ls' = [n | (c', n) <- ls, c' == c]
+      in code' (toList mapa) ls' ++ code rs ls
+
+    code' [] _ = "\n"
+    code' ((i, pieza): rs) ls = if elem i ls
+      then case pieza of
+        Nothing -> ":_._ " ++ code' rs ls
+        Just (t,color) -> ":" ++ show color ++ "." ++ show t ++ " " ++ code' rs ls
+      else case pieza of
+        Nothing -> "._._ " ++ code' rs ls
+        Just (t,color) -> "." ++ show color ++ "." ++ show t ++ " " ++ code' rs ls
 
 --Mueve una pieza desde una posicion dada a otra
 --si no puede no hace nada

@@ -2,6 +2,7 @@ module Main where
 
 import Modulos.Tablero(creaTableroInicial,
                        dibujaTablero,
+                       codificaTablero,
                        muevePieza,
                        dropInalcanzables,
                        getPieza)
