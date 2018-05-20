@@ -53,6 +53,11 @@ dibujaTablero t ls =  "     _____ _____ _____ _____ _____ _____ _____ _____\n"
         Nothing -> "     |" ++ draw' rs ls
         Just (t,color) -> " " ++ show color ++ "," ++ show t ++ " |" ++ draw' rs ls
 
+--Funcion que codifica el tablero en un String para que pueda ser leido e
+--interpretado por el GUI
+codificaTablero :: Tablero -> [Posicion] -> String
+codificaTablero = error ""
+
 --Mueve una pieza desde una posicion dada a otra
 --si no puede no hace nada
 muevePieza :: Tablero -> Posicion -> Posicion -> Tablero

@@ -1,3 +1,6 @@
 Implementar la deteccion del Jaque y del Jaque Mate.
 Agregar regla para el rey, la cual no le permita comer a una pieza que le haga Jaque.
 Ir mostrando las piezas comidas.
+La parte de haskell todo el tiempo estara leyendo de un archivo donde la parte de js
+  estara mandando informacion, pero solo hara algo con esa informacion cuando la
+  bandera(que sera la primera linea del archivo) haya cambiado.
