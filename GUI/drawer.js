@@ -9,6 +9,7 @@ var http = require('http');
 fileP_I = 'shared_files/Ohs_Ijs.txt'
 fileP_O = 'shared_files/Ihs_Ojs.txt'
 tablero = ''
+flag = false
 r = 0
 
 //setInterval(output, 1000, fileP,'j ........');
@@ -43,6 +44,7 @@ function mkUl(data) {
 
 /******p5 code******/
 function setup() {
+  output(fileP_O,'.')
   w = windowWidth - 15
   createCanvas(w, w);
   background(150);
@@ -66,13 +68,21 @@ function setup() {
 
 function draw() {
   rH = Math.floor(r/2);
+    background(150);
   if (tablero != "") {
     lines = tablero.split('\n');
     turno = lines[0].slice(0,1);
+    msg = lines[1];
+    mkUl(msg);
     for (var i = 0; i < 8; i++) {
-      piezas = lines[i+1].split(' ')
+      piezas = lines[i+2].split(' ')
       for (var j = 0; j < 8; j++) {
         p = piezas[j]
+        if(!((j % 2 == 0 && i % 2 == 0) || (j % 2 != 0 && i % 2 != 0))){
+          noStroke();
+          fill(75);
+          rect(j*r, i*r, r, r);
+        }
         if (p.slice(0,1) == ':') {
           color = 0;
           if (turno == '1') color = 255;
@@ -97,6 +107,10 @@ function draw() {
 function mousePressed() {
   var x = Math.floor(mouseX/100) + 1
   var y = Math.floor(mouseY/100) + 1
-  output(fileP_O,x + '.' + y)
+
+  if (flag) output(fileP_O,'.' + x + '.' + y);
+  else output(fileP_O,':' + x + '.' + y);
+
+  flag = !flag;
 }
 /******p5 code******/

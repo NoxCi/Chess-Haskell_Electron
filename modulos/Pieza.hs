@@ -56,12 +56,20 @@ posicionValida (c,j) = ((toChar . toInt) c /= ' ') && ((toInt . toChar) j /= -1)
 --devuelve Nothing si no pudo.
 makePosicion :: String -> Maybe Posicion
 makePosicion st
-  | length st < 2 = Nothing
+  | length st < 3 = Nothing
   | otherwise = let
-    letra = st !! 0
-    num = st !! 1
-    in if isDigit num
-      then Just (toUpper letra, read [num])
+    x = st !! 0
+    y = st !! 2
+    in if isDigit x && isDigit y
+      then case read [y] of
+        1 -> Just ('A', read [x])
+        2 -> Just ('B', read [x])
+        3 -> Just ('C', read [x])
+        4 -> Just ('D', read [x])
+        5 -> Just ('E', read [x])
+        6 -> Just ('F', read [x])
+        7 -> Just ('G', read [x])
+        8 -> Just ('H', read [x])
       else Nothing
 
 --Devuelve el color de una pieza

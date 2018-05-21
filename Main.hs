@@ -1,12 +1,15 @@
 module Main where
 
-import Modulos.Tablero(creaTableroInicial,
+import Modulos.Tablero(Tablero,
+                       creaTableroInicial,
                        dibujaTablero,
                        codificaTablero,
                        muevePieza,
                        dropInalcanzables,
                        getPieza)
 import Modulos.Pieza(Color(..),
+                     Pieza,
+                     Posicion,
                      makePosicion,
                      color,
                      posiblesMovimientos,
@@ -23,28 +26,96 @@ fileP_I = "shared_files/Ihs_Ojs.txt"
 
 main :: IO ()
 main = do
-  output fileP_O $ "1\n" ++ codificaTablero creaTableroInicial []
+  let tablero = creaTableroInicial
   idT_1 <- forkOS $ callCommand "npm start"
-  --app
-  return ()
+  app tablero [] Nothing 0 "" '.'
 
-app :: IO ()
-app = do
-  inP <- input fileP_I
-  let outP =  inP --aqui debe procesarse la entrada
-  output fileP_O outP
-  app
+app :: Tablero -> [Posicion] -> Maybe Posicion -> Integer -> String -> Char -> IO ()
+app t@tablero ls mPI i msg f = do
+  if even i --Jugador 1
 
-input :: FilePath -> IO String
-input filePath = do
+    then if null ls --seleccion de posicion inicial
+      then do
+        output fileP_O $ "1\n" ++ "Turno jugador 1          " ++ msg ++ "\n" ++ codificaTablero tablero ls
+        (p,f') <- input fileP_I f
+        let mPI' = makePosicion p
+            pI = fromJust mPI'
+        if mPI' == Nothing || not (posicionValida pI)
+          then app tablero [] Nothing i "Posicion invalida 1" f'
+          else do
+            let mPieza = getPieza t pI
+                pieza = fromJust mPieza
+            if mPieza == Nothing || color pieza == N
+              then app tablero [] Nothing i "Posicion invalida 2" f'
+              else app tablero (dropInalcanzables t pieza pI (posiblesMovimientos pieza pI)) mPI' i "" f'
+
+      else do  --seleccion de posicion final
+        output fileP_O $ "1\n" ++ "Turno jugador 1          " ++ msg ++ "\n" ++ codificaTablero tablero ls
+        (p,f') <- input fileP_I f
+        let
+          mPF = makePosicion p
+          pF = fromJust mPF
+          in if mPF == Nothing
+            then app tablero ls mPI i "Posicion invalida 3" f'
+            else do
+              let pI = fromJust mPI
+              if pF == pI
+                then app tablero [] Nothing i "" f'
+                else if not (elem pF ls)
+                  then app tablero ls mPI i "Posicion invalida 4" f'
+                  else app (muevePieza t pI pF) [] Nothing (i+1) "" f'
+
+    --Jugador 2
+    else if null ls --seleccion de posicion inicial
+      then do
+        output fileP_O $ "2\n" ++ "Turno jugador 2          " ++ msg ++ "\n" ++ codificaTablero tablero ls
+        (p,f') <- input fileP_I f
+        let mPI' = makePosicion p
+            pI = fromJust mPI'
+        if mPI' == Nothing || not (posicionValida pI)
+          then app tablero [] Nothing i "Posicion invalida" f'
+          else do
+            let mPieza = getPieza t pI
+                pieza = fromJust mPieza
+            if mPieza == Nothing || color pieza == B
+              then app tablero [] Nothing i "Posicion invalida" f'
+              else app tablero (dropInalcanzables t pieza pI (posiblesMovimientos pieza pI)) mPI' i "" f'
+
+      else do  --seleccion de posicion final
+        output fileP_O $ "2\n" ++ "Turno jugador 2          " ++ msg ++ "\n" ++ codificaTablero tablero ls
+        (p,f') <- input fileP_I f
+        let
+          mPF = makePosicion p
+          pF = fromJust mPF
+          in if mPF == Nothing
+            then app tablero ls mPI i "Posicion invalida" f'
+            else do
+              let pI = fromJust mPI
+              if pF == pI
+                then app tablero [] Nothing i "" f'
+                else if not (elem pF ls)
+                  then app tablero ls mPI i "Posicion invalida" f'
+                  else app (muevePieza t pI pF) [] Nothing (i+1) "" f'
+
+
+input :: FilePath -> Char -> IO (String, Char)
+input filePath flag= do
   threadDelay 100000
-  readFile filePath
+  inP <- readFile filePath
+  if length inP == 0
+    then input filePath flag
+    else if inP !! 0 /= flag
+      then do
+        return (tail inP, inP !! 0)
+      else input filePath flag
 
 output :: FilePath -> String -> IO ()
 output filePath text = do
   writeFile filePath text
 
+------------------------
 --Condigo de prototipo--
+------------------------
 main' :: IO ()
 main' = do
   let tablero = creaTableroInicial
@@ -76,34 +147,34 @@ loop t@tablero cmd ls mPI i msg = do
         callCommand cmd
         putStrLn $ dibujaTablero t [] ++ "\n" ++
                "     Turno Jugador 1               " ++ msg ++ "\n" ++
-               "Posición inicial: "
+               "Posicion inicial: "
         p <- getLine
         let mPI' = makePosicion p
             pI = fromJust mPI'
         if mPI' == Nothing || not (posicionValida pI)
-          then loop tablero cmd [] Nothing i "Posición invalida"
+          then loop tablero cmd [] Nothing i "Posicion invalida"
           else do
             let mPieza = getPieza t pI
                 pieza = fromJust mPieza
             if mPieza == Nothing || color pieza == N
-              then loop tablero cmd [] Nothing i "Posición invalida"
+              then loop tablero cmd [] Nothing i "Posicion invalida"
               else loop tablero cmd (dropInalcanzables t pieza pI (posiblesMovimientos pieza pI)) mPI' i ""
 
       else do  --seleccion de posicion final
         callCommand cmd
         putStrLn $ dibujaTablero t ls ++ "\n" ++
                "     Turno Jugador 1               " ++ msg ++ "\n" ++
-               "Posición final: "
+               "Posicion final: "
         p <- getLine
         let
           mPF = makePosicion p
           pF = fromJust mPF
           in if mPF == Nothing
-            then loop tablero cmd ls mPI i "Posición invalida"
+            then loop tablero cmd ls mPI i "Posicion invalida"
             else do
               let pI = fromJust mPI
               if not (elem pF ls)
-                then loop tablero cmd ls mPI i "Posición invalida"
+                then loop tablero cmd ls mPI i "Posicion invalida"
                 else loop (muevePieza t pI pF) cmd [] Nothing (i+1) ""
 
     --Jugador 2
@@ -112,32 +183,32 @@ loop t@tablero cmd ls mPI i msg = do
         callCommand cmd
         putStrLn $ dibujaTablero t [] ++ "\n" ++
                "     Turno Jugador 2               " ++ msg ++ "\n" ++
-               "Posición inicial: "
+               "Posicion inicial: "
         p <- getLine
         let mPI' = makePosicion p
             pI = fromJust mPI'
         if mPI' == Nothing || not (posicionValida pI)
-          then loop tablero cmd [] Nothing i "Posición invalida"
+          then loop tablero cmd [] Nothing i "Posicion invalida"
           else do
             let mPieza = getPieza t pI
                 pieza = fromJust mPieza
             if mPieza == Nothing || color pieza == B
-              then loop tablero cmd [] Nothing i "Posición invalida"
+              then loop tablero cmd [] Nothing i "Posicion invalida"
               else loop tablero cmd (dropInalcanzables t pieza pI (posiblesMovimientos pieza pI)) mPI' i ""
 
       else do  --seleccion de posicion final
         callCommand cmd
         putStrLn $ dibujaTablero t ls ++ "\n" ++
                "     Turno Jugador 2               " ++ msg ++ "\n" ++
-               "Posición final: "
+               "Posicion final: "
         p <- getLine
         let
           mPF = makePosicion p
           pF = fromJust mPF
           in if mPF == Nothing
-            then loop tablero cmd ls mPI i "Posición invalida"
+            then loop tablero cmd ls mPI i "Posicion invalida"
             else do
               let pI = fromJust mPI
               if not (elem pF ls)
-                then loop tablero cmd ls mPI i "Posición invalida"
+                then loop tablero cmd ls mPI i "Posicion invalida"
                 else loop (muevePieza t pI pF) cmd [] Nothing (i+1) ""
