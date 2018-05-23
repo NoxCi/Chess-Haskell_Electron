@@ -56,29 +56,30 @@ dibujaTablero t ls =  "     _____ _____ _____ _____ _____ _____ _____ _____\n"
 --Funcion que codifica el tablero en un String para que pueda ser leido e
 --interpretado por el GUI
 codificaTablero :: Tablero -> [Posicion] -> String
-codificaTablero t ls = code (toList t) ls
+codificaTablero t ls = "._._ ._A_ ._B_ ._C_ ._D_ ._E_ ._F_ ._G_ ._H_ ._._\n" ++ code (toList t) ls
   where
-    code [] _= ""
+    code [] _= "._._ ._A_ ._B_ ._C_ ._D_ ._E_ ._F_ ._G_ ._H_ ._._"
     code ((c, mapa): rs) ls = let
        ls' = [n | (c', n) <- ls, c' == c]
-      in code' (toList mapa) ls' ++ code rs ls
+      in "._"++show (toInt c)++"_" ++ " " ++ code' (toList mapa) ls' c ++ code rs ls
 
-    code' [] _ = "\n"
-    code' ((i, pieza): rs) ls = if elem i ls
+    code' [] _ c = "._" ++ show (toInt c) ++ "_" ++ "\n"
+    code' ((i, pieza): rs) ls c = if elem i ls
       then case pieza of
-        Nothing -> ":_._ " ++ code' rs ls
-        Just (t,color) -> ":" ++ show color ++ "." ++ show t ++ " " ++ code' rs ls
+        Nothing -> ":_._ " ++ code' rs ls c
+        Just (t,color) -> ":" ++ show color ++ "." ++ show t ++ " " ++ code' rs ls c
       else case pieza of
-        Nothing -> "._._ " ++ code' rs ls
-        Just (t,color) -> "." ++ show color ++ "." ++ show t ++ " " ++ code' rs ls
+        Nothing -> "._._ " ++ code' rs ls c
+        Just (t,color) -> "." ++ show color ++ "." ++ show t ++ " " ++ code' rs ls c
 
 --Mueve una pieza desde una posicion dada a otra
 --si no puede no hace nada
 muevePieza :: Tablero -> Posicion -> Posicion -> Tablero
-muevePieza t p@(c1,i1) (c2,i2) = let
-      pieza  = getPieza t p
+muevePieza t p1@(c1,i1) p2@(c2,i2) = let
+      piezaPosI = getPieza t p1
+      piezaPosF = getPieza t p2
       t' = adjust (\_ -> (adjust (\_ -> Nothing) i1 (t!c1))) c1 t --quitamos la pieza de donde estaba
-      r = adjust (\_ -> (adjust (\_ -> pieza) i2 (t'!c2))) c2 t' --la movemos a la posicion dada
+      r = adjust (\_ -> (adjust (\_ -> piezaPosI) i2 (t'!c2))) c2 t' --la movemos a la posicion dada
       in r
 
 --Dado posbibles movimeintos de una pieza quita aquellas que son inalcanzables dado un tablero.
@@ -111,12 +112,14 @@ dropInalcanzables tab pieza pI ls = case  pieza of
   (Peon, N) -> let
     l1 = [p | p <- ls, not (dawnLeft p [pI]) || (dawnLeft p [pI] && hayPieza tab p)]
     l2 = [p | p <- l1, not (dawnRight p [pI]) || (dawnRight p [pI] && hayPieza tab p)]
-    in filter (distintoColor tab N) [p | p <- l2, not (dawn p [pI]) || (dawn p [pI] && not (hayPieza tab p))]
+    l3 = [p | p <- l2, not $ dawn p dawns]
+    in filter (distintoColor tab N) [p | p <- l3, not (dawn p [pI]) || (dawn p [pI] && not (hayPieza tab p))]
 
   (Peon, B) -> let
     l1 = [p | p <- ls, not (upLeft p [pI]) || (upLeft p [pI] && hayPieza tab p)]
     l2 = [p | p <- l1, not (upRight p [pI]) || (upRight p [pI] && hayPieza tab p)]
-    in filter (distintoColor tab B) [p | p <- l2, not (up p [pI]) || (up p [pI] && not (hayPieza tab p))]
+    l3 = [p | p <- l2, not $ up p ups]
+    in filter (distintoColor tab B) [p | p <- l3, not (up p [pI]) || (up p [pI] && not (hayPieza tab p))]
 
   where
     piezas = filter (hayPieza tab) ls
@@ -155,6 +158,15 @@ dropInalcanzables tab pieza pI ls = case  pieza of
     dawnLeft p@(c1, i1) ((c2,i2):rs) = (toInt c1 < toInt c2 && i1 < i2) || dawnLeft p rs
     dawnRight _ [] = False
     dawnRight p@(c1, i1) ((c2,i2):rs) = (toInt c1 < toInt c2 && i1 > i2) || dawnRight p rs
+
+hayJaque :: Tablero -> Color -> Bool
+hayJaque t c = error ""
+
+hayJaqueMate :: Tablero -> Color -> Bool
+hayJaqueMate t c = error ""
+
+piezaHaceJaque :: Tablero -> Posicion -> Color -> Bool
+piezaHaceJaque t p c = error ""
 
 --Posiblemente nos devuelva una pieza
 getPieza :: Tablero -> Posicion -> Maybe Pieza

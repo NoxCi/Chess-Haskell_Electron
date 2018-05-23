@@ -45,44 +45,71 @@ function mkUl(data) {
 /******p5 code******/
 function setup() {
   output(fileP_O,'.')
-  w = windowWidth - 15
+  w = windowWidth - 25
   createCanvas(w, w);
-  background(150);
+  background(255);
   textAlign(CENTER);
   textSize(24);
 
   b = 255;
   n = 0;
-  r = Math.floor(w/8);
+  r = Math.floor(w/10);
 
-  for (var i = 0; i < 8; i++) {
-    for (var j = 0; j < 8; j++) {
-      if(j % 2 == 0 && i % 2 == 0) continue;
-      if(j % 2 != 0 && i % 2 != 0) continue;
-      noStroke();
-      fill(75);
-      rect(j*r, i*r, r, r);
+  for (var i = 0; i < 10; i++) {
+    for (var j = 0; j < 10; j++) {
+      if (i == 0 || i == 9|| j == 0 ||j == 9) continue;
+      if((j % 2 == 0 && i % 2 == 0) || (j % 2 != 0 && i % 2 != 0)){
+        noStroke();
+        fill(150);
+        rect(j*r, i*r, r, r);
+      } else {
+        noStroke();
+        fill(75);
+        rect(j*r, i*r, r, r);
+      }
     }
   }
 }
 
 function draw() {
   rH = Math.floor(r/2);
-    background(150);
   if (tablero != "") {
     lines = tablero.split('\n');
     turno = lines[0].slice(0,1);
     msg = lines[1];
     mkUl(msg);
-    for (var i = 0; i < 8; i++) {
-      piezas = lines[i+2].split(' ')
-      for (var j = 0; j < 8; j++) {
-        p = piezas[j]
-        if(!((j % 2 == 0 && i % 2 == 0) || (j % 2 != 0 && i % 2 != 0))){
+    for (var i = 0; i < 10; i++) {
+      contenidoTab = lines[i+2].split(' ')
+      for (var j = 0; j < 10; j++) {
+
+        if (i == 0 || i == 9) { //aqeui dibujamos las letras
+          strokeWeight(2);
+          stroke(0);
+          fill(0);
+          text(contenidoTab[j].slice(2,3),j*r + rH,i*r + rH+10);
+          continue;
+        }
+
+        if (j == 0 || j == 9) { //dibujamos los numeros
+          strokeWeight(2);
+          stroke(0);
+          fill(0);
+          text(contenidoTab[0].slice(2,3),j*r + rH,i*r + rH+10);
+          continue;
+        }
+
+        //dibujamos las piezas
+        p = contenidoTab[j]
+        if((j % 2 == 0 && i % 2 == 0) || (j % 2 != 0 && i % 2 != 0)){
+          noStroke();
+          fill(150);
+          rect(j*r, i*r, r, r);
+        } else {
           noStroke();
           fill(75);
           rect(j*r, i*r, r, r);
         }
+
         if (p.slice(0,1) == ':') {
           color = 0;
           if (turno == '1') color = 255;
@@ -105,12 +132,13 @@ function draw() {
 }
 
 function mousePressed() {
-  var x = Math.floor(mouseX/100) + 1
-  var y = Math.floor(mouseY/100) + 1
+  var x = Math.floor(mouseX/r) + 1
+  var y = Math.floor(mouseY/r) + 1
+  if (x != 1 && x != 10 && y != 1 && y != 10) {
+    if (flag) output(fileP_O,'.' + (x-1) + '.' + (y-1));
+    else output(fileP_O,':' + (x-1) + '.' + (y-1));
+    flag = !flag;
+  }
 
-  if (flag) output(fileP_O,'.' + x + '.' + y);
-  else output(fileP_O,':' + x + '.' + y);
-
-  flag = !flag;
 }
 /******p5 code******/

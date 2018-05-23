@@ -13,7 +13,8 @@ import Modulos.Pieza(Color(..),
                      makePosicion,
                      color,
                      posiblesMovimientos,
-                     posicionValida)
+                     posicionValida,
+                     newFormat)
 import Modulos.Pruebas
 import System.Process (callCommand)
 import System.Info (os)
@@ -36,66 +37,66 @@ app t@tablero ls mPI i msg f = do
 
     then if null ls --seleccion de posicion inicial
       then do
-        output fileP_O $ "1\n" ++ "Turno jugador 1          " ++ msg ++ "\n" ++ codificaTablero tablero ls
+        output fileP_O $ "1\n" ++ "Turno jugador 1     ---    " ++ msg ++ "\n" ++ codificaTablero tablero ls
         (p,f') <- input fileP_I f
         let mPI' = makePosicion p
             pI = fromJust mPI'
         if mPI' == Nothing || not (posicionValida pI)
-          then app tablero [] Nothing i "Posicion invalida 1" f'
+          then app tablero [] Nothing i "Posicion invalida(1)" f'
           else do
             let mPieza = getPieza t pI
                 pieza = fromJust mPieza
             if mPieza == Nothing || color pieza == N
-              then app tablero [] Nothing i "Posicion invalida 2" f'
+              then app tablero [] Nothing i "Posicion invalida(2)" f'
               else app tablero (dropInalcanzables t pieza pI (posiblesMovimientos pieza pI)) mPI' i "" f'
 
       else do  --seleccion de posicion final
-        output fileP_O $ "1\n" ++ "Turno jugador 1          " ++ msg ++ "\n" ++ codificaTablero tablero ls
+        output fileP_O $ "1\n" ++ "Turno jugador 1     ---    " ++ msg ++ "\n" ++ codificaTablero tablero ls
         (p,f') <- input fileP_I f
         let
           mPF = makePosicion p
           pF = fromJust mPF
           in if mPF == Nothing
-            then app tablero ls mPI i "Posicion invalida 3" f'
+            then app tablero ls mPI i "Posicion invalida(3)" f'
             else do
               let pI = fromJust mPI
               if pF == pI
                 then app tablero [] Nothing i "" f'
                 else if not (elem pF ls)
-                  then app tablero ls mPI i "Posicion invalida 4" f'
-                  else app (muevePieza t pI pF) [] Nothing (i+1) "" f'
+                  then app tablero ls mPI i "Posicion invalida(4)" f'
+                  else app (muevePieza t pI pF) [] Nothing (i+1) ("Ultimo movimiento: " ++ show (newFormat pI) ++" -> "++show (newFormat pF)) f'
 
     --Jugador 2
     else if null ls --seleccion de posicion inicial
       then do
-        output fileP_O $ "2\n" ++ "Turno jugador 2          " ++ msg ++ "\n" ++ codificaTablero tablero ls
+        output fileP_O $ "2\n" ++ "Turno jugador 2     ---    " ++ msg ++ "\n" ++ codificaTablero tablero ls
         (p,f') <- input fileP_I f
         let mPI' = makePosicion p
             pI = fromJust mPI'
         if mPI' == Nothing || not (posicionValida pI)
-          then app tablero [] Nothing i "Posicion invalida" f'
+          then app tablero [] Nothing i "Posicion invalida(5)" f'
           else do
             let mPieza = getPieza t pI
                 pieza = fromJust mPieza
             if mPieza == Nothing || color pieza == B
-              then app tablero [] Nothing i "Posicion invalida" f'
+              then app tablero [] Nothing i "Posicion invalida(6)" f'
               else app tablero (dropInalcanzables t pieza pI (posiblesMovimientos pieza pI)) mPI' i "" f'
 
       else do  --seleccion de posicion final
-        output fileP_O $ "2\n" ++ "Turno jugador 2          " ++ msg ++ "\n" ++ codificaTablero tablero ls
+        output fileP_O $ "2\n" ++ "Turno jugador 2     ---    " ++ msg ++ "\n" ++ codificaTablero tablero ls
         (p,f') <- input fileP_I f
         let
           mPF = makePosicion p
           pF = fromJust mPF
           in if mPF == Nothing
-            then app tablero ls mPI i "Posicion invalida" f'
+            then app tablero ls mPI i "Posicion invalida(7)" f'
             else do
               let pI = fromJust mPI
               if pF == pI
                 then app tablero [] Nothing i "" f'
                 else if not (elem pF ls)
-                  then app tablero ls mPI i "Posicion invalida" f'
-                  else app (muevePieza t pI pF) [] Nothing (i+1) "" f'
+                  then app tablero ls mPI i "Posicion invalida(8)" f'
+                  else app (muevePieza t pI pF) [] Nothing (i+1) ("Ultimo movimiento: " ++ show (newFormat pI) ++" -> "++show (newFormat pF)) f'
 
 
 input :: FilePath -> Char -> IO (String, Char)

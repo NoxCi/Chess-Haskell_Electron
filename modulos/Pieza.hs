@@ -71,6 +71,8 @@ makePosicion st
         7 -> Just ('G', read [x])
         8 -> Just ('H', read [x])
       else Nothing
+newFormat :: Posicion -> (Integer, Char)
+newFormat (c, n) = (toInt c, toCharNF n)
 
 --Devuelve el color de una pieza
 color :: Pieza -> Color
@@ -102,4 +104,16 @@ toChar i = case i of
    3 -> 'F'
    2 -> 'G'
    1 -> 'H'
+   otherwise -> ' '
+
+toCharNF :: Integer -> Char
+toCharNF i = case i of
+   8 -> 'H'
+   7 -> 'G'
+   6 -> 'F'
+   5 -> 'E'
+   4 -> 'D'
+   3 -> 'C'
+   2 -> 'B'
+   1 -> 'A'
    otherwise -> ' '
