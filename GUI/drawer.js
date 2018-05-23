@@ -82,7 +82,8 @@ function draw() {
       contenidoTab = lines[i+2].split(' ')
       for (var j = 0; j < 10; j++) {
 
-        if (i == 0 || i == 9) { //aqeui dibujamos las letras
+        //aqui dibujamos las letras
+        if (i == 0 || i == 9) {
           strokeWeight(2);
           stroke(0);
           fill(0);
@@ -90,7 +91,8 @@ function draw() {
           continue;
         }
 
-        if (j == 0 || j == 9) { //dibujamos los numeros
+        //dibujamos los numeros
+        if (j == 0 || j == 9) {
           strokeWeight(2);
           stroke(0);
           fill(0);
@@ -98,7 +100,7 @@ function draw() {
           continue;
         }
 
-        //dibujamos las piezas
+        //dibujamos las casillas
         p = contenidoTab[j]
         if((j % 2 == 0 && i % 2 == 0) || (j % 2 != 0 && i % 2 != 0)){
           noStroke();
@@ -110,14 +112,7 @@ function draw() {
           rect(j*r, i*r, r, r);
         }
 
-        if (p.slice(0,1) == ':') {
-          color = 0;
-          if (turno == '1') color = 255;
-          strokeWeight(4);
-          stroke(color);
-          noFill();
-          rect(j*r, i*r, r, r);
-        }
+        //dibujamos las piezas
         if (p.slice(1,2) != '_') {
           color = 0;
           if (p.slice(1,2) == 'B') color = 255;
@@ -125,6 +120,16 @@ function draw() {
           stroke(color);
           fill(color);
           text(p.slice(3,4),j*r + rH,i*r + rH+10);
+        }
+
+        //dibujamos los posibles movimientos
+        if (p.slice(0,1) == ':') {
+          color = 0;
+          if (turno == '1') color = 255;
+          strokeWeight(4);
+          stroke(color);
+          noFill();
+          rect(j*r, i*r, r, r);
         }
       }
     }

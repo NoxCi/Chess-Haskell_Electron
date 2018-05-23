@@ -165,9 +165,6 @@ hayJaque t c = error ""
 hayJaqueMate :: Tablero -> Color -> Bool
 hayJaqueMate t c = error ""
 
-piezaHaceJaque :: Tablero -> Posicion -> Color -> Bool
-piezaHaceJaque t p c = error ""
-
 --Posiblemente nos devuelva una pieza
 getPieza :: Tablero -> Posicion -> Maybe Pieza
 getPieza t (c,i) = (t ! c) ! i

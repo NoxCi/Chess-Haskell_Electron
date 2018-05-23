@@ -71,8 +71,8 @@ makePosicion st
         7 -> Just ('G', read [x])
         8 -> Just ('H', read [x])
       else Nothing
-newFormat :: Posicion -> (Integer, Char)
-newFormat (c, n) = (toInt c, toCharNF n)
+newFormat :: Posicion -> (Char, Integer)
+newFormat (c, n) = (toCharNF n,toInt c )
 
 --Devuelve el color de una pieza
 color :: Pieza -> Color

@@ -64,7 +64,7 @@ app t@tablero ls mPI i msg f = do
                 then app tablero [] Nothing i "" f'
                 else if not (elem pF ls)
                   then app tablero ls mPI i "Posicion invalida(4)" f'
-                  else app (muevePieza t pI pF) [] Nothing (i+1) ("Ultimo movimiento: " ++ show (newFormat pI) ++" -> "++show (newFormat pF)) f'
+                  else app (muevePieza t pI pF) [] Nothing (i+1) ("Ultimo movimiento: " ++ show (newFormat pI) ++" > "++show (newFormat pF)) f'
 
     --Jugador 2
     else if null ls --seleccion de posicion inicial
@@ -96,7 +96,7 @@ app t@tablero ls mPI i msg f = do
                 then app tablero [] Nothing i "" f'
                 else if not (elem pF ls)
                   then app tablero ls mPI i "Posicion invalida(8)" f'
-                  else app (muevePieza t pI pF) [] Nothing (i+1) ("Ultimo movimiento: " ++ show (newFormat pI) ++" -> "++show (newFormat pF)) f'
+                  else app (muevePieza t pI pF) [] Nothing (i+1) ("Ultimo movimiento: " ++ show (newFormat pI) ++" > "++show (newFormat pF)) f'
 
 
 input :: FilePath -> Char -> IO (String, Char)
