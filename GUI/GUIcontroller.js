@@ -3,7 +3,7 @@ const path = require('path')
 const url = require('url')
 
 var fs = require('fs');
-var fileP_O = 'share_files/texto_2.txt'
+var fileP_O = 'shared_files/Ihs_Ojs.txt'
 
   // Keep a global reference of the window object, if you don't, the window will
   // be closed automatically when the JavaScript object is garbage collected.
@@ -28,7 +28,9 @@ var fileP_O = 'share_files/texto_2.txt'
       // Dereference the window object, usually you would store windows
       // in an array if your app supports multi windows, this is the time
       // when you should delete the corresponding element.
-
+      fs.writeFile(fileP_O, '', function (err) {
+        if (err) throw err;
+      });
       win = null
     })
 

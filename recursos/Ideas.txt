@@ -1,6 +1,4 @@
 Implementar la deteccion del Jaque y del Jaque Mate. ~
 Ir mostrando las piezas comidas.
 Cuando un peon llegue al extremo contrario este debe poder combertirse en cualquier pieza.
-Mostrar el ultimo movimiento echo. /
 Usar imagenes que representen piezas.
-Vaciar los archivos compartidos al cerrar el juego.

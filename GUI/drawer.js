@@ -44,8 +44,8 @@ function mkUl(data) {
 
 /******p5 code******/
 function setup() {
-  output(fileP_O,'.')
-  w = windowWidth - 25
+  output(fileP_O,'.');
+  w = windowWidth - 25;
   createCanvas(w, w);
   background(255);
   textAlign(CENTER);
