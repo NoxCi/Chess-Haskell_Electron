@@ -44,10 +44,10 @@ app t@tablero ls mPI i msg f = do
   let (turno,colorEnemigo) = if even i then ("1",N) else ("2",B)
   if null ls --seleccion de posicion inicial
     then do
+      output fileP_O $ turno++"\n" ++ "Turno jugador "++turno++ " --- " ++ msg ++ "\n" ++ codificaTablero tablero ls
       (p,f') <- input fileP_I f
       let mPI' = makePosicion p
           pI = fromJust mPI'
-      output fileP_O $ turno++"\n" ++ "Turno jugador"++turno++ " --- " ++ msg ++ "\n" ++ codificaTablero tablero ls
       if mPI' == Nothing || not (posicionValida pI)
         then app tablero [] Nothing i "Posicion invalida(1)" f'
         else do
