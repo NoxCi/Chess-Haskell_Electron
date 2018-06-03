@@ -82,7 +82,7 @@ function draw() {
       contenidoTab = lines[i+2].split(' ')
       for (var j = 0; j < 10; j++) {
 
-        //aqui dibujamos las letras
+        //dibujamos las letras
         if (i == 0 || i == 9) {
           strokeWeight(2);
           stroke(0);

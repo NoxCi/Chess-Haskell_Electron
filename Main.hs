@@ -15,7 +15,6 @@ import Modulos.Pieza(Color(..),
                      posiblesMovimientos,
                      posicionValida,
                      newFormat)
-import Modulos.Pruebas
 import System.Process (callCommand)
 import System.Info (os)
 import Data.Maybe (fromJust)
@@ -26,8 +25,6 @@ import Control.Concurrent (threadDelay,
 import Control.Exception(SomeException(..),
                          catch,
                          throwIO)
-import System.IO.Error(IOError,
-                       userError)
 
 fileP_O = "shared_files/Ohs_Ijs.txt"
 fileP_I = "shared_files/Ihs_Ojs.txt"
@@ -35,6 +32,10 @@ fileP_I = "shared_files/Ihs_Ojs.txt"
 main :: IO ()
 main = do
   let tablero = creaTableroInicial
+      cmd = if os == "mingw32"
+        then "cls"
+        else "clear"
+  callCommand cmd
   output fileP_O $ "1\n" ++ "Turno jugador 1 --- " ++ "" ++ "\n" ++ codificaTablero tablero []
   idT_1 <- forkOS $ callCommand "npm start"
   catch (app tablero [] Nothing 0 "" '.') handler
@@ -63,15 +64,15 @@ app t@tablero ls mPI i msg f = do
       let
         mPF = makePosicion p
         pF = fromJust mPF
-        in if mPF == Nothing
-          then app tablero ls mPI i "Posicion invalida(3)" f'
-          else do
-            let pI = fromJust mPI
-            if pF == pI
-              then app tablero [] Nothing i "" f'
-              else if not (elem pF ls)
-                then app tablero ls mPI i "Posicion invalida(4)" f'
-                else app (muevePieza t pI pF) [] Nothing (i+1) ("Ultimo movimiento: " ++ show (newFormat pI) ++" > "++show (newFormat pF)) f'
+      if mPF == Nothing
+        then app tablero ls mPI i "Posicion invalida(3)" f'
+        else do
+          let pI = fromJust mPI
+          if pF == pI
+            then app tablero [] Nothing i "" f'
+            else if not (elem pF ls)
+              then app tablero ls mPI i "Posicion invalida(4)" f'
+              else app (muevePieza t pI pF) [] Nothing (i+1) ("Ultimo movimiento: " ++ show (newFormat pI) ++" > "++ show (newFormat pF)) f'
 
 input :: FilePath -> Char -> IO (String, Char)
 input filePath flag= do

@@ -23,21 +23,21 @@ posiblesMovimientos pieza p@(c,i) = let
   s = i + j
   d = j - i
   in case pieza of
-    (Torre,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], (a /= j && b == i) || (a == j && b /= i)]
+    (Torre,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], b == i || a == j]
 
     (Caballo,_) -> filter posicionValida [(toChar (j+2), i+1), (toChar (j+2), i-1), --arriba
                                          (toChar (j-2), i+1), (toChar (j-2), i-1), --abajo
                                          (toChar (j+1), i+2), (toChar (j-1), i+2), -- derecha
                                          (toChar (j+1), i-2), (toChar (j-1), i-2)] --izquierda
 
-    (Alfil,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], (a /= b+d && a+b == s) || (a == b+d && a+b /= s)]
+    (Alfil,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], a+b == s || a == b+d]
 
     (Rey,_) -> filter posicionValida [(toChar (j+1), i), (toChar (j+1), i+1),
                                      (toChar (j), i+1), (toChar (j-1), i+1),
                                      (toChar (j-1), i), (toChar (j-1), i-1),
                                      (toChar (j), i-1), (toChar (j+1), i-1)]
 
-    (Reina,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], (a /= j && b == i) || (a == j && b /= i) || (a /= b+d && a+b == s) || (a == b+d && a+b /= s)]
+    (Reina,_) -> [(toChar a,b) | a <- [1..8], b <- [1..8], a+b == s || a == b+d || b == i || a == j]
 
     (Peon,B) -> if j == 2
                 then filter posicionValida [(toChar (j+1), i), (toChar (j+1), i+1), (toChar (j+1), i-1), (toChar (j+2), i)]
@@ -71,7 +71,10 @@ makePosicion st
         7 -> Just ('G', read [x])
         8 -> Just ('H', read [x])
       else Nothing
-newFormat :: Posicion -> (Char, Integer)
+
+--Crea un nuevo formato de una nueva posicion para que pueda ser leido por el
+--usuario repecto a las nuevas coordenadas.
+newFormat :: Posicion -> Posicion
 newFormat (c, n) = (toCharNF n,toInt c )
 
 --Devuelve el color de una pieza

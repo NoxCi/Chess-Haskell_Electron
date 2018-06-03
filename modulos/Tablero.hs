@@ -75,9 +75,8 @@ codificaTablero t ls = "._._ ._A_ ._B_ ._C_ ._D_ ._E_ ._F_ ._G_ ._H_ ._._\n" ++ 
 --Mueve una pieza desde una posicion dada a otra
 --si no puede no hace nada
 muevePieza :: Tablero -> Posicion -> Posicion -> Tablero
-muevePieza t p1@(c1,i1) p2@(c2,i2) = let
-      piezaPosI = getPieza t p1
-      piezaPosF = getPieza t p2
+muevePieza t p@(c1,i1) (c2,i2) = let
+      piezaPosI = getPieza t p
       t' = adjust (\_ -> (adjust (\_ -> Nothing) i1 (t!c1))) c1 t --quitamos la pieza de donde estaba
       r = adjust (\_ -> (adjust (\_ -> piezaPosI) i2 (t'!c2))) c2 t' --la movemos a la posicion dada
       in r
@@ -124,7 +123,7 @@ dropInalcanzables tab pieza pI ls = case  pieza of
   where
     piezas = filter (hayPieza tab) ls
 
-    distintoColor tab c x = case getPieza tab x of
+    distintoColor tablero c x = case getPieza tablero x of
       Nothing -> True
       Just (_,c') -> c /= c'
 
@@ -139,7 +138,7 @@ dropInalcanzables tab pieza pI ls = case  pieza of
     dawnRights = [p | p <- piezas, dawnRight p [pI]]
 
     --Todas la siguientes funciones nos dicen dada una posicon y una lista de
-    -- posiciones si la primera esta a la iquierda, derecha, arrbia, etc
+    -- posiciones si la primera esta a la iquierda, derecha, arriba, etc
     -- de alguna de las posiciones de la lista.
     left _ [] = False
     left p@(c1, i1) ((c2,i2):rs) = (c1 == c2 && i1 < i2) || left p rs
@@ -158,12 +157,6 @@ dropInalcanzables tab pieza pI ls = case  pieza of
     dawnLeft p@(c1, i1) ((c2,i2):rs) = (toInt c1 < toInt c2 && i1 < i2) || dawnLeft p rs
     dawnRight _ [] = False
     dawnRight p@(c1, i1) ((c2,i2):rs) = (toInt c1 < toInt c2 && i1 > i2) || dawnRight p rs
-
-hayJaque :: Tablero -> Color -> Bool
-hayJaque t c = error ""
-
-hayJaqueMate :: Tablero -> Color -> Bool
-hayJaqueMate t c = error ""
 
 --Posiblemente nos devuelva una pieza
 getPieza :: Tablero -> Posicion -> Maybe Pieza
