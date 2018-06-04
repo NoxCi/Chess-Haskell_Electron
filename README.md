@@ -15,7 +15,10 @@ nuestro tablero, drawer.html sera quien dibuje el tablero en GUI.html y
 GUIcontroller.js que basicamente sirve para poner a GUI.html en una ventana
 de escritorio. Ademas de los archivos anteriores tenemos la carpeta libraries
 que contiene a p5.js una biblioteca que permite dibujar graficos en javaScript
-de forma parecida a processing.
+de forma parecida a processing. Lo anterior necesita Node.js version LTS para
+funcionar, el cual puede conseguirse aqui:
+
+https://nodejs.org/en/
 
 Y por ultimo tenemos a Main.hs el cual tiene el rol de intermediario entre la
 GUI y los modulos Pieza.hs y Tablero.hs
