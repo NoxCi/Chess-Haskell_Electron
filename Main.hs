@@ -23,8 +23,7 @@ import Control.Concurrent (threadDelay,
                            myThreadId,
                            killThread)
 import Control.Exception(SomeException(..),
-                         catch,
-                         throwIO)
+                         catch)
 
 fileP_O = "shared_files/Ohs_Ijs.txt"
 fileP_I = "shared_files/Ihs_Ojs.txt"
@@ -36,7 +35,7 @@ main = do
         then "cls"
         else "clear"
   callCommand cmd
-  output fileP_O $ "1\n" ++ "Turno jugador 1 --- " ++ "" ++ "\n" ++ codificaTablero tablero []
+  output fileP_O $ "1\n" ++ "Turno jugador 1 --- " ++ "\n" ++ codificaTablero tablero []
   idT_1 <- forkOS $ callCommand "npm start"
   catch (app tablero [] Nothing 0 "" '.') handler
 

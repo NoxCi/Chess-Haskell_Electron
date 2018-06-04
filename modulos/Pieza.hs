@@ -75,7 +75,7 @@ makePosicion st
 --Crea un nuevo formato de una nueva posicion para que pueda ser leido por el
 --usuario repecto a las nuevas coordenadas.
 newFormat :: Posicion -> Posicion
-newFormat (c, n) = (toCharNF n,toInt c )
+newFormat (c, n) = (toCharNF n,toInt c)
 
 --Devuelve el color de una pieza
 color :: Pieza -> Color
