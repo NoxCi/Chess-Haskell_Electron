@@ -18,7 +18,32 @@ que contiene a p5.js una biblioteca que permite dibujar graficos en javaScript
 de forma parecida a processing. Lo anterior necesita Node.js version LTS para
 funcionar, el cual puede conseguirse aqui:
 
-https://nodejs.org/en/
+  https://nodejs.org/en/
 
 Y por ultimo tenemos a Main.hs el cual tiene el rol de intermediario entre la
 GUI y los modulos Pieza.hs y Tablero.hs
+
+Se recomiendo actualizar npm con lo siguiente:
+
+  npm update
+
+Despues en la carpeta raiz de ejecutarse el siguiente comando:
+
+  npm install
+
+Para confirmar que esta funcionando debe ejecutarse o siguiente:
+
+  npm start
+
+Debiendo apararecer una ventana con un tablero de ajedrez sin ninguna pieza.
+
+Si lo anterior no funciona se debera cambiar el main por el que se encuentra en
+linea 100 del archivo Main.hs para poder ejecutarse la interfaz de consola.
+
+En cualquier caso para ejecutar el programa basta con:
+
+  runhaskell Main.hs
+
+Pero si se requiere compilacion se debe hacer con la siguiente bandera:
+
+  ghc -threaded Main.hs
